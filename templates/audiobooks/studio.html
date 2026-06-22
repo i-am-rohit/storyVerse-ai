@@ -1,0 +1,225 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Audiobook Studio | StoryVerse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/audiobook-studio.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ab-studio" id="ab-studio">
+    <header class="ab-header">
+        <div class="ab-header-left">
+            <span class="ab-badge"><i class="bi bi-headphones"></i> Audiobook Studio</span>
+            <h1 class="ab-title">Audiobook <span class="ab-neon">Studio</span></h1>
+            <p class="ab-header-sub">Indian voices · <strong>100% free</strong> built-in background music</p>
+        </div>
+        <div class="ab-header-right">
+            <label class="ab-select-label" for="story-select">Story</label>
+            <select class="form-select ab-select" id="story-select" aria-label="Select story">
+                <option value="">Choose a story…</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="row g-4 ab-layout">
+        <div class="col-lg-7">
+            <div class="ab-player-card">
+                <div class="ab-story-banner d-none" id="story-banner">
+                    <div class="ab-story-banner-icon"><i class="bi bi-lightbulb"></i></div>
+                    <div>
+                        <strong id="banner-title">Story recommendations</strong>
+                        <p id="banner-text" class="mb-0"></p>
+                    </div>
+                </div>
+
+                <div class="ab-cover-section">
+                    <div class="ab-cover-wrap" id="cover-wrap">
+                        <div class="ab-cover" id="album-cover">
+                            <div class="ab-cover-art" id="cover-art">
+                                <i class="bi bi-book-half ab-cover-icon"></i>
+                            </div>
+                            <div class="ab-cover-shine"></div>
+                        </div>
+                        <div class="ab-cover-glow" id="cover-glow"></div>
+                    </div>
+
+                    <div class="ab-track-info">
+                        <h2 class="ab-track-title" id="track-title">No Story Selected</h2>
+                        <p class="ab-track-meta" id="track-meta">Select a story to begin</p>
+                        <div class="ab-track-tags" id="track-tags"></div>
+                    </div>
+                </div>
+
+                <div class="ab-waveform-wrap">
+                    <canvas id="waveform-canvas" height="80" aria-hidden="true"></canvas>
+                    <div class="ab-progress-bar" id="progress-bar">
+                        <div class="ab-progress-fill" id="progress-fill"></div>
+                        <div class="ab-progress-thumb" id="progress-thumb"></div>
+                    </div>
+                    <div class="ab-time">
+                        <span id="time-current">0:00</span>
+                        <span id="time-total">0:00</span>
+                    </div>
+                </div>
+
+                <div class="ab-visualizer" id="visualizer" aria-hidden="true">
+                    <canvas id="visualizer-canvas" height="64"></canvas>
+                </div>
+
+                <div class="ab-controls">
+                    <button class="ab-ctrl-btn" id="btn-skip-back" title="Restart" disabled>
+                        <i class="bi bi-skip-backward-fill"></i>
+                    </button>
+                    <button class="ab-ctrl-btn ab-ctrl-play" id="btn-play" title="Play" disabled>
+                        <i class="bi bi-play-fill" id="play-icon"></i>
+                    </button>
+                    <button class="ab-ctrl-btn" id="btn-skip-forward" title="Skip forward" disabled>
+                        <i class="bi bi-skip-forward-fill"></i>
+                    </button>
+                </div>
+
+                <div class="ab-action-row">
+                    <button type="button" class="ab-btn ab-btn-generate" id="btn-generate" disabled>
+                        <i class="bi bi-magic"></i>
+                        <span id="btn-generate-label">Generate Audio</span>
+                    </button>
+                    <button type="button" class="ab-btn ab-btn-download" id="btn-download" disabled>
+                        <i class="bi bi-download"></i>
+                        Download
+                    </button>
+                </div>
+
+                <div class="ab-gen-overlay d-none" id="gen-overlay" aria-live="polite">
+                    <div class="ab-gen-card">
+                        <div class="ab-gen-spinner"></div>
+                        <h3 class="ab-gen-title">Converting to Audio</h3>
+                        <p class="ab-gen-status" id="gen-status-label">Preparing…</p>
+                        <div class="ab-gen-bar">
+                            <div class="ab-gen-bar-fill" id="gen-bar-fill"></div>
+                        </div>
+                        <span class="ab-gen-percent" id="gen-percent">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="ab-sidebar">
+                <div class="ab-panel ab-panel-compact">
+                    <h3 class="ab-panel-title"><i class="bi bi-sliders"></i> Filters</h3>
+                    <div class="ab-filter-row">
+                        <span class="ab-filter-label">Region</span>
+                        <div class="ab-gender-toggle" role="group" aria-label="Voice region">
+                            <button type="button" class="ab-gender-btn ab-region-filter active" data-region="all">All</button>
+                            <button type="button" class="ab-gender-btn ab-region-filter" data-region="western">Western</button>
+                            <button type="button" class="ab-gender-btn ab-region-filter" data-region="indian">Indian</button>
+                        </div>
+                    </div>
+                    <div class="ab-filter-row">
+                        <span class="ab-filter-label">Gender</span>
+                        <div class="ab-gender-toggle" role="group" aria-label="Voice gender">
+                            <button type="button" class="ab-gender-btn ab-gender-filter active" data-gender="all">All</button>
+                            <button type="button" class="ab-gender-btn ab-gender-filter" data-gender="male">Male</button>
+                            <button type="button" class="ab-gender-btn ab-gender-filter" data-gender="female">Female</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ab-panel ab-panel-voices">
+                    <h3 class="ab-panel-title"><i class="bi bi-mic"></i> Voices <span class="ab-panel-count" id="voice-count"></span></h3>
+                    <div class="ab-voice-grid" id="voice-grid">
+                        {% for voice in voices %}
+                        <button type="button" class="ab-voice-card" data-voice-id="{{ voice.id }}" data-gender="{{ voice.gender }}" data-region="{{ voice.region }}">
+                            <div class="ab-voice-avatar ab-voice-avatar--{{ voice.gender }}">
+                                <i class="bi {{ voice.icon }}"></i>
+                            </div>
+                            <div class="ab-voice-info">
+                                <span class="ab-voice-name">{{ voice.name }}{% if voice.elevenlabs %} <span class="ab-el-badge">EL</span>{% endif %}</span>
+                                <span class="ab-voice-style">{{ voice.style }}</span>
+                                <span class="ab-voice-accent">{{ voice.accent }}</span>
+                            </div>
+                            <div class="ab-voice-check"><i class="bi bi-check-lg"></i></div>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <p class="ab-voice-empty d-none" id="voice-empty">No voices match these filters. Try All region and gender.</p>
+                </div>
+
+                <div class="ab-panel ab-panel-music">
+                    <h3 class="ab-panel-title"><i class="bi bi-music-note-beamed"></i> Background Music</h3>
+                    <p class="ab-music-free-badge"><i class="bi bi-gift"></i> All music styles are free — generated on your device, no API cost</p>
+                    <p class="ab-music-hint" id="music-hint">Select a story to see music matched to genre & language.</p>
+                    <div class="ab-music-grid" id="music-grid">
+                        <button type="button" class="ab-music-card selected" data-music-id="auto">
+                            <i class="bi bi-magic"></i>
+                            <span class="ab-music-name">Auto — match story</span>
+                            <span class="ab-music-desc">Free · Genre + language aware</span>
+                        </button>
+                        {% for style in music_styles %}
+                        {% if style.id != "none" %}
+                        <button type="button" class="ab-music-card" data-music-id="{{ style.id }}">
+                            <i class="bi {{ style.icon }}"></i>
+                            <span class="ab-music-name">{{ style.name }}</span>
+                            <span class="ab-music-desc">{{ style.description }}</span>
+                        </button>
+                        {% endif %}
+                        {% endfor %}
+                        <button type="button" class="ab-music-card ab-music-card--mute" data-music-id="none">
+                            <i class="bi bi-volume-mute"></i>
+                            <span class="ab-music-name">No Music</span>
+                            <span class="ab-music-desc">Narration only</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ab-panel ab-panel-preview">
+                    <h3 class="ab-panel-title"><i class="bi bi-file-text"></i> Story Preview</h3>
+                    <div class="ab-preview-text" id="story-preview">
+                        <p class="ab-preview-empty">Story content will appear here after selection.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="ab-library" id="ab-library">
+        <div class="ab-library-header">
+            <h2 class="ab-library-title"><i class="bi bi-collection-play"></i> Your Audiobooks</h2>
+            <p class="ab-library-sub">All stories converted to audio — play, modify voice/music, or delete</p>
+        </div>
+        <div class="ab-library-list" id="audiobook-library"></div>
+        <p class="ab-library-empty" id="library-empty">No audiobooks yet. Select a story above and generate your first one.</p>
+    </section>
+</div>
+
+<audio id="audio-player" preload="auto"></audio>
+<audio id="music-player" preload="auto" loop></audio>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.AUDIOBOOK_STUDIO = {
+        urls: {
+            stories: "{% url 'audiobooks:list_stories' %}",
+            audiobooks: "{% url 'audiobooks:list_audiobooks' %}",
+            voices: "{% url 'audiobooks:list_voices' %}",
+            generate: "{% url 'audiobooks:generate' %}",
+            status: "{% url 'audiobooks:generation_status' audiobook_id=0 %}".replace("/0/", "/{id}/"),
+            delete: "{% url 'audiobooks:delete_audiobook' audiobook_id=0 %}".replace("/0/", "/{id}/"),
+            stream: "{% url 'audiobooks:stream' audiobook_id=0 %}".replace("/0/", "/{id}/"),
+            download: "{% url 'audiobooks:download' audiobook_id=0 %}".replace("/0/", "/{id}/"),
+        },
+        csrfToken: "{{ csrf_token }}",
+        preselectedStoryId: {% if selected_story %}{{ selected_story.pk }}{% else %}null{% endif %},
+        genreDefaultMusic: {{ genre_default_music|safe }},
+    };
+</script>
+<script src="{% static 'js/audiobook-studio.js' %}"></script>
+{% endblock %}

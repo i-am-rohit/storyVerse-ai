@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin | StoryVerse AI{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/background.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="app-body">
+    <div class="site-background" aria-hidden="true">
+        <div class="site-background__image"></div>
+        <div class="site-background__overlay"></div>
+    </div>
+
+    <div class="site-content">
+        <header class="admin-topbar">
+            <div class="container d-flex align-items-center justify-content-between py-3">
+                <a href="{% url 'accounts:user_login' %}" class="admin-brand">
+                    <i class="bi bi-shield-lock"></i> StoryVerse Admin
+                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small"><i class="bi bi-person-badge"></i> {{ user.username }}</span>
+                    <a href="{% url 'stories:index' %}" class="btn btn-sm btn-outline-light">Open App</a>
+                    {% include "accounts/_logout_form.html" with as_link=True button_class="btn btn-sm btn-outline-danger" form_class="d-inline" %}
+                </div>
+            </div>
+        </header>
+
+        <main class="container py-4">
+            {% if messages %}
+            <div class="messages mb-3">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

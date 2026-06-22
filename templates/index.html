@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero" id="hero">
+    <div class="hero-bg">
+        <div class="hero-orb hero-orb--1"></div>
+        <div class="hero-orb hero-orb--2"></div>
+        <div class="hero-orb hero-orb--3"></div>
+        <div class="hero-grid"></div>
+    </div>
+
+    <div class="container hero-inner">
+        <div class="hero-content">
+            <div class="hero-badge" data-hero-animate>
+                <i class="bi bi-lightning-charge-fill"></i>
+                Powered by Multi-Agent AI
+            </div>
+
+            <h1 class="hero-title" data-hero-animate>
+                Create Stories<br>
+                <span class="gradient-text">with AI</span>
+            </h1>
+
+            <p class="hero-subtitle" data-hero-animate>
+                Generate stories, audiobooks and summaries instantly.
+            </p>
+
+            <div class="hero-actions" data-hero-animate>
+                <a href="{% if user.is_authenticated %}{% url 'stories:create' %}{% else %}{% url 'accounts:register' %}{% endif %}"
+                   class="btn btn-primary btn-lg glow-hover">
+                    <i class="bi bi-magic"></i>
+                    Generate Story
+                </a>
+                <a href="#audiobooks-preview" class="btn btn-glass btn-lg glow-hover">
+                    <i class="bi bi-headphones"></i>
+                    Explore Audiobooks
+                </a>
+            </div>
+
+            <div class="hero-stats" data-hero-animate>
+                <div class="stat">
+                    <span class="stat-value">10K+</span>
+                    <span class="stat-label">Stories Created</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">50+</span>
+                    <span class="stat-label">AI Voices</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">4.9</span>
+                    <span class="stat-label">User Rating</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual" data-hero-animate>
+            <div class="book-glow"></div>
+            <div class="book-container">
+                <div class="book-float">
+                    <svg class="magical-book" viewBox="0 0 280 320" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="bookCover" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#3b82f6"/>
+                                <stop offset="50%" stop-color="#8b5cf6"/>
+                                <stop offset="100%" stop-color="#a855f7"/>
+                            </linearGradient>
+                            <linearGradient id="bookPages" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#e2e8f0"/>
+                                <stop offset="100%" stop-color="#94a3b8"/>
+                            </linearGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="4" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <!-- Back cover -->
+                        <path d="M40 30 L240 30 L240 290 L40 290 Z" fill="url(#bookCover)" opacity="0.3"/>
+                        <!-- Pages -->
+                        <path d="M50 35 L230 35 L228 285 L52 285 Z" fill="url(#bookPages)" opacity="0.9"/>
+                        <!-- Front cover -->
+                        <path d="M55 40 L225 40 L225 280 L55 280 Z" fill="url(#bookCover)" filter="url(#glow)"/>
+                        <!-- Spine highlight -->
+                        <rect x="55" y="40" width="8" height="240" fill="rgba(255,255,255,0.15)" rx="2"/>
+                        <!-- Magical runes -->
+                        <circle cx="140" cy="120" r="30" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none" class="rune-ring"/>
+                        <circle cx="140" cy="120" r="18" stroke="rgba(0,212,255,0.6)" stroke-width="1" fill="none" class="rune-ring rune-ring--inner"/>
+                        <path d="M140 95 L140 145 M115 120 L165 120" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" class="rune-cross"/>
+                        <!-- Sparkles -->
+                        <circle cx="100" cy="80" r="3" fill="#00d4ff" class="sparkle"/>
+                        <circle cx="180" cy="100" r="2" fill="#a855f7" class="sparkle sparkle--delay"/>
+                        <circle cx="170" cy="200" r="2.5" fill="#3b82f6" class="sparkle sparkle--delay-2"/>
+                        <circle cx="110" cy="210" r="2" fill="#00d4ff" class="sparkle sparkle--delay"/>
+                        <!-- Title lines -->
+                        <rect x="85" y="170" width="110" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
+                        <rect x="95" y="182" width="90" height="3" rx="1.5" fill="rgba(255,255,255,0.2)"/>
+                        <rect x="105" y="192" width="70" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+                    </svg>
+                </div>
+                <div class="book-particles">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-scroll">
+        <a href="#features" aria-label="Scroll to features">
+            <span class="scroll-line"></span>
+        </a>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="section" id="features">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-tag">Features</span>
+            <h2 class="section-title">Everything you need to <span class="gradient-text">create & publish</span></h2>
+            <p class="section-desc">From first draft to finished audiobook — one seamless AI-powered workflow.</p>
+        </div>
+
+        <div class="features-grid">
+            <article class="feature-card glass glow-hover" data-aos="fade-up" data-aos-delay="0">
+                <div class="feature-icon feature-icon--blue">
+                    <i class="bi bi-journal-richtext"></i>
+                </div>
+                <h3>AI Story Generation</h3>
+                <p>Multi-agent AI crafts compelling narratives with rich characters, plot arcs, and vivid worlds.</p>
+            </article>
+
+            <article class="feature-card glass glow-hover" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon feature-icon--purple">
+                    <i class="bi bi-headphones"></i>
+                </div>
+                <h3>Instant Audiobooks</h3>
+                <p>Studio-quality narration with lifelike voices. Transform any story into audio in minutes.</p>
+            </article>
+
+            <article class="feature-card glass glow-hover" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon feature-icon--cyan">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <h3>Smart Summaries</h3>
+                <p>Auto-generate chapter summaries, synopses, and marketing copy from your full manuscripts.</p>
+            </article>
+
+            <article class="feature-card glass glow-hover" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon feature-icon--pink">
+                    <i class="bi bi-music-note-beamed"></i>
+                </div>
+                <h3>Ambient Soundscapes</h3>
+                <p>AI-composed background music sets the mood — fantasy, thriller, romance, and more.</p>
+            </article>
+
+            <article class="feature-card glass glow-hover" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon feature-icon--blue">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3>Quality Review</h3>
+                <p>Built-in reviewer agent polishes grammar, pacing, and consistency before you publish.</p>
+            </article>
+
+            <article class="feature-card glass glow-hover" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon feature-icon--purple">
+                    <i class="bi bi-collection"></i>
+                </div>
+                <h3>Book Publishing</h3>
+                <p>Compile chapters into polished books. Export to PDF, EPUB, or share directly online.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="section section--alt" id="how-it-works">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-tag">How It Works</span>
+            <h2 class="section-title">From idea to audiobook in <span class="gradient-text">four steps</span></h2>
+            <p class="section-desc">Our AI agents handle the heavy lifting so you can focus on creativity.</p>
+        </div>
+
+        <div class="steps-track">
+            <div class="step-connector" aria-hidden="true"></div>
+
+            <div class="step glass" data-aos="fade-right" data-aos-delay="0">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3>Describe Your Vision</h3>
+                    <p>Enter a prompt, genre, and tone. The Planner Agent builds a structured outline with chapters.</p>
+                </div>
+                <div class="step-icon"><i class="bi bi-lightbulb"></i></div>
+            </div>
+
+            <div class="step glass" data-aos="fade-left" data-aos-delay="150">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3>AI Writes Your Story</h3>
+                    <p>The Writer Agent generates full chapters. The Reviewer refines every paragraph for quality.</p>
+                </div>
+                <div class="step-icon"><i class="bi bi-pencil-square"></i></div>
+            </div>
+
+            <div class="step glass" data-aos="fade-right" data-aos-delay="300">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3>Generate Summaries</h3>
+                    <p>The Summary Agent creates blurbs, chapter recaps, and SEO-friendly descriptions instantly.</p>
+                </div>
+                <div class="step-icon"><i class="bi bi-card-text"></i></div>
+            </div>
+
+            <div class="step glass" data-aos="fade-left" data-aos-delay="450">
+                <div class="step-number">04</div>
+                <div class="step-content">
+                    <h3>Publish as Audiobook</h3>
+                    <p>Narration and Music Agents produce a complete audiobook with voice and ambient soundtrack.</p>
+                </div>
+                <div class="step-icon"><i class="bi bi-broadcast"></i></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AI Capabilities -->
+<section class="section" id="ai-capabilities">
+    <div class="container">
+        <div class="capabilities-layout">
+            <div class="capabilities-text" data-aos="fade-right">
+                <span class="section-tag">AI Capabilities</span>
+                <h2 class="section-title">Six specialized <span class="gradient-text">AI agents</span> working together</h2>
+                <p class="section-desc">Each agent is fine-tuned for a specific creative task, orchestrated into a seamless pipeline.</p>
+
+                <ul class="agent-list">
+                    <li class="agent-item glass glow-hover">
+                        <span class="agent-dot agent-dot--blue"></span>
+                        <div>
+                            <strong>Planner Agent</strong>
+                            <span>Story structure & chapter outlines</span>
+                        </div>
+                    </li>
+                    <li class="agent-item glass glow-hover">
+                        <span class="agent-dot agent-dot--purple"></span>
+                        <div>
+                            <strong>Writer Agent</strong>
+                            <span>Long-form narrative generation</span>
+                        </div>
+                    </li>
+                    <li class="agent-item glass glow-hover">
+                        <span class="agent-dot agent-dot--cyan"></span>
+                        <div>
+                            <strong>Reviewer Agent</strong>
+                            <span>Quality assurance & editing</span>
+                        </div>
+                    </li>
+                    <li class="agent-item glass glow-hover">
+                        <span class="agent-dot agent-dot--pink"></span>
+                        <div>
+                            <strong>Summary Agent</strong>
+                            <span>Synopses & marketing copy</span>
+                        </div>
+                    </li>
+                    <li class="agent-item glass glow-hover">
+                        <span class="agent-dot agent-dot--blue"></span>
+                        <div>
+                            <strong>Narration Agent</strong>
+                            <span>Text-to-speech with emotion</span>
+                        </div>
+                    </li>
+                    <li class="agent-item glass glow-hover">
+                        <span class="agent-dot agent-dot--purple"></span>
+                        <div>
+                            <strong>Music Agent</strong>
+                            <span>Adaptive background soundscapes</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="capabilities-visual glass" data-aos="fade-left" id="audiobooks-preview">
+                <div class="cap-visual-header">
+                    <span class="cap-dot cap-dot--red"></span>
+                    <span class="cap-dot cap-dot--yellow"></span>
+                    <span class="cap-dot cap-dot--green"></span>
+                    <span class="cap-label">StoryVerse AI Pipeline</span>
+                </div>
+                <div class="cap-visual-body">
+                    <div class="pipeline-node pipeline-node--active">
+                        <i class="bi bi-input-cursor-text"></i>
+                        <span>Prompt Input</span>
+                    </div>
+                    <div class="pipeline-arrow"><i class="bi bi-arrow-down"></i></div>
+                    <div class="pipeline-row">
+                        <div class="pipeline-node"><i class="bi bi-diagram-3"></i><span>Planner</span></div>
+                        <div class="pipeline-node"><i class="bi bi-pen"></i><span>Writer</span></div>
+                        <div class="pipeline-node"><i class="bi bi-check2-circle"></i><span>Reviewer</span></div>
+                    </div>
+                    <div class="pipeline-arrow"><i class="bi bi-arrow-down"></i></div>
+                    <div class="pipeline-row">
+                        <div class="pipeline-node"><i class="bi bi-file-text"></i><span>Summary</span></div>
+                        <div class="pipeline-node"><i class="bi bi-mic"></i><span>Narration</span></div>
+                        <div class="pipeline-node"><i class="bi bi-music-note-list"></i><span>Music</span></div>
+                    </div>
+                    <div class="pipeline-arrow"><i class="bi bi-arrow-down"></i></div>
+                    <div class="pipeline-node pipeline-node--output">
+                        <i class="bi bi-box-seam"></i>
+                        <span>Published Story + Audiobook</span>
+                    </div>
+                </div>
+                <div class="cap-visual-wave">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section section--alt" id="testimonials">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-tag">Testimonials</span>
+            <h2 class="section-title">Loved by <span class="gradient-text">creators worldwide</span></h2>
+            <p class="section-desc">Authors, podcasters, and educators trust StoryVerse AI for their creative workflows.</p>
+        </div>
+
+        <div class="testimonials-grid">
+            <blockquote class="testimonial glass glow-hover" data-aos="fade-up" data-aos-delay="0">
+                <div class="testimonial-stars">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p>"I published my first fantasy novel in a weekend. The AI narration sounds better than most human audiobooks I've heard."</p>
+                <footer>
+                    <div class="testimonial-avatar">SM</div>
+                    <div>
+                        <cite>Sarah Mitchell</cite>
+                        <span>Indie Author</span>
+                    </div>
+                </footer>
+            </blockquote>
+
+            <blockquote class="testimonial glass glow-hover" data-aos="fade-up" data-aos-delay="150">
+                <div class="testimonial-stars">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p>"The multi-agent pipeline is genius. Each step feels like having a dedicated creative team — planner, writer, editor, and narrator."</p>
+                <footer>
+                    <div class="testimonial-avatar">JR</div>
+                    <div>
+                        <cite>James Rodriguez</cite>
+                        <span>Podcast Producer</span>
+                    </div>
+                </footer>
+            </blockquote>
+
+            <blockquote class="testimonial glass glow-hover" data-aos="fade-up" data-aos-delay="300">
+                <div class="testimonial-stars">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p>"My students create illustrated storybooks with AI summaries for their reading assignments. Engagement has skyrocketed."</p>
+                <footer>
+                    <div class="testimonial-avatar">LP</div>
+                    <div>
+                        <cite>Dr. Lisa Park</cite>
+                        <span>Education Director</span>
+                    </div>
+                </footer>
+            </blockquote>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Footer -->
+<section class="cta-section" id="cta">
+    <div class="cta-bg">
+        <div class="hero-orb hero-orb--1"></div>
+        <div class="hero-orb hero-orb--2"></div>
+    </div>
+    <div class="container">
+        <div class="cta-card glass" data-aos="zoom-in">
+            <h2>Ready to create your next <span class="gradient-text">masterpiece</span>?</h2>
+            <p>Join thousands of creators using StoryVerse AI to bring their stories to life.</p>
+            <div class="cta-actions">
+                <a href="{% if user.is_authenticated %}{% url 'stories:create' %}{% else %}{% url 'accounts:register' %}{% endif %}"
+                   class="btn btn-primary btn-lg glow-hover">
+                    <i class="bi bi-rocket-takeoff"></i>
+                    Start Creating Free
+                </a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-glass btn-lg glow-hover">
+                    Sign In
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="landing-footer">
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <a href="{% url 'landing' %}" class="nav-brand">
+                <span class="brand-icon"><i class="bi bi-stars"></i></span>
+                StoryVerse AI
+            </a>
+            <p class="footer-tagline">AI-powered storytelling for the next generation of creators.</p>
+        </div>
+
+        <div class="footer-links">
+            <div class="footer-col">
+                <h4>Product</h4>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#ai-capabilities">AI Capabilities</a>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <a href="{% url 'stories:create' %}">Stories</a>
+                <a href="{% url 'audiobooks:index' %}">Audiobooks</a>
+                <a href="{% url 'books:index' %}">Books</a>
+            </div>
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="{% url 'accounts:register' %}">Register</a>
+                <a href="{% url 'accounts:login' %}">Sign In</a>
+                <a href="{% url 'stories:index' %}">My Stories</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; {% now "Y" %} StoryVerse AI. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "app_base.html" %}
+
+{% block title %}Books | StoryVerse AI{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 mb-1">Books</h1>
+        <p class="text-muted mb-0">Compile and manage your published works.</p>
+    </div>
+    <button class="btn btn-warning" disabled>
+        <i class="bi bi-plus-lg me-1"></i> New Book
+    </button>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body text-center py-5 text-muted">
+        <i class="bi bi-book display-4 d-block mb-3"></i>
+        <p class="mb-0">No books yet. Create a book from your stories.</p>
+    </div>
+</div>
+{% endblock %}

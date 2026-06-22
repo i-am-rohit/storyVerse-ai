@@ -1,0 +1,186 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Story Generator | StoryVerse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/story-generator.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="story-generator-page">
+    <!-- Page Header -->
+    <div class="sg-header mb-4">
+        <div>
+            <span class="sg-badge"><i class="bi bi-magic"></i> AI Story Generator</span>
+            <h1 class="sg-title">Create Your <span class="sg-gradient-text">Story</span></h1>
+            <p class="sg-subtitle">Configure your preferences, describe your idea, and let AI craft a unique tale.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 sg-layout">
+        <!-- Left Panel — Inputs -->
+        <div class="col-lg-5">
+            <div class="sg-card gradient-border glass-card h-100">
+                <div class="sg-card-inner">
+                    <div class="sg-card-header">
+                        <i class="bi bi-sliders"></i>
+                        <h2>Story Settings</h2>
+                    </div>
+
+                    <form id="story-form" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="language" class="form-label sg-label">
+                                <i class="bi bi-translate"></i> Language
+                            </label>
+                            {{ form.language }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="genre" class="form-label sg-label">
+                                <i class="bi bi-bookmark-star"></i> Genre
+                            </label>
+                            {{ form.genre }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="age_group" class="form-label sg-label">
+                                <i class="bi bi-people"></i> Age Group
+                            </label>
+                            {{ form.age_group }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="story_length" class="form-label sg-label">
+                                <i class="bi bi-text-paragraph"></i> Story Size
+                            </label>
+                            {{ form.story_length }}
+                            <div class="form-text sg-hint">Short ≈150 · Medium ≈350 · Long ≈600 · Extra Long ≈1,000 words</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="prompt" class="form-label sg-label">
+                                <i class="bi bi-chat-square-text"></i> Story Prompt
+                            </label>
+                            {{ form.prompt }}
+                            <div class="form-text sg-hint">Be descriptive — include characters, setting, or plot ideas.</div>
+                        </div>
+
+                        <button type="submit" class="btn sg-btn sg-btn-primary sg-btn-animated w-100" id="btn-generate">
+                            <span class="sg-btn-content">
+                                <i class="bi bi-stars"></i>
+                                Generate Story
+                            </span>
+                            <span class="sg-btn-shimmer"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel — Output -->
+        <div class="col-lg-7">
+            <div class="sg-card gradient-border glass-card h-100" id="output-card">
+                <div class="sg-card-inner d-flex flex-column h-100">
+                    <div class="sg-card-header">
+                        <i class="bi bi-journal-richtext"></i>
+                        <h2>Generated Story</h2>
+                        <span class="sg-status badge" id="story-status">Waiting</span>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="sg-empty flex-grow-1" id="empty-state">
+                        <div class="sg-empty-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <h3>Your story will appear here</h3>
+                        <p>Fill in the settings and click <strong>Generate Story</strong> to begin.</p>
+                    </div>
+
+                    <!-- Story Output -->
+                    <div class="sg-output flex-grow-1 d-none" id="story-output">
+                        <h3 class="sg-story-title" id="story-title"></h3>
+
+                        <div class="sg-meta mb-3" id="story-meta"></div>
+
+                        <div class="sg-story-body" id="story-content-wrapper">
+                            <p class="sg-story-content" id="story-content"></p>
+                        </div>
+
+                        <div class="sg-moral mt-4" id="story-moral-wrapper">
+                            <div class="sg-moral-label">
+                                <i class="bi bi-lightbulb"></i> Moral of the Story
+                            </div>
+                            <p class="sg-moral-text" id="story-moral"></p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="sg-actions mt-4 d-none" id="story-actions">
+                        <div class="row g-2">
+                            <div class="col-sm-6 col-xl-3">
+                                <button type="button" class="btn sg-btn sg-btn-outline sg-btn-animated w-100" id="btn-continue" disabled>
+                                    <span class="sg-btn-content"><i class="bi bi-arrow-repeat"></i> Continue Story</span>
+                                    <span class="sg-btn-shimmer"></span>
+                                </button>
+                            </div>
+                            <div class="col-sm-6 col-xl-3">
+                                <button type="button" class="btn sg-btn sg-btn-success sg-btn-animated w-100" id="btn-save" disabled>
+                                    <span class="sg-btn-content"><i class="bi bi-bookmark-check"></i> Save Story</span>
+                                    <span class="sg-btn-shimmer"></span>
+                                </button>
+                            </div>
+                            <div class="col-sm-12 col-xl-6">
+                                <button type="button" class="btn sg-btn sg-btn-audio sg-btn-animated w-100" id="btn-audio" disabled>
+                                    <span class="sg-btn-content"><i class="bi bi-headphones"></i> Convert To Audio</span>
+                                    <span class="sg-btn-shimmer"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Typing Indicator -->
+                    <div class="sg-typing d-none" id="typing-indicator">
+                        <span class="sg-typing-dot"></span>
+                        <span class="sg-typing-dot"></span>
+                        <span class="sg-typing-dot"></span>
+                        <span class="sg-typing-text" id="typing-text">AI is writing your story…</span>
+                    </div>
+
+                    <div class="sg-live-progress d-none" id="generation-progress">
+                        <div class="sg-progress-bar">
+                            <div class="sg-progress-fill" id="sg-progress-fill"></div>
+                        </div>
+                        <p class="sg-progress-msg" id="sg-progress-msg">Starting…</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.STORY_GENERATOR = {
+        urls: {
+            generate: "{% url 'stories:generate_stream' %}",
+            continue: "{% url 'stories:continue_stream' %}",
+            save: "{% url 'stories:save' %}",
+            convertAudio: "{% url 'stories:convert_audio' %}",
+            get: "{% url 'stories:get' 0 %}".replace("/0/", "/{id}/"),
+        },
+        csrfToken: "{{ csrf_token }}",
+    };
+</script>
+<script src="{% static 'js/sse-client.js' %}"></script>
+<script src="{% static 'js/story-generator.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,12 @@
+<div class="auth-social">
+    <div class="auth-social-row">
+        {% for provider in social_login_providers %}
+        <a href="{{ provider.login_url }}"
+           class="auth-social-icon-btn auth-social-icon-btn--{{ provider.icon }}"
+           aria-label="Continue with {{ provider.label }}"
+           title="{{ provider.label }}">
+            {% include "accounts/_social_icon.html" with icon=provider.icon only %}
+        </a>
+        {% endfor %}
+    </div>
+</div>

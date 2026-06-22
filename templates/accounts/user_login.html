@@ -1,0 +1,55 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Manage Users | StoryVerse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card card shadow-sm border-0 auth-card--admin">
+        <div class="card-body p-4 p-md-5">
+            <div class="auth-brand text-center mb-4">
+                <span class="auth-icon auth-icon--admin"><i class="bi bi-shield-lock"></i></span>
+                <h1 class="h3 mb-1">Manage Users</h1>
+                <p class="text-muted mb-0">Superuser sign in to manage accounts</p>
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'accounts:user_login' %}" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Username</label>
+                    <input type="text" name="username" id="id_username"
+                           class="form-control{% if form.username.errors %} is-invalid{% endif %}"
+                           value="{{ form.username.value|default:'' }}" required autofocus autocomplete="username">
+                    {% for error in form.username.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Password</label>
+                    <input type="password" name="password" id="id_password"
+                           class="form-control{% if form.password.errors %} is-invalid{% endif %}"
+                           required autocomplete="current-password">
+                    {% for error in form.password.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary w-100 auth-submit auth-submit--admin">Manage Users</button>
+            </form>
+
+            <p class="text-center text-muted mt-4 mb-0">
+                <a href="{% url 'accounts:login' %}"><i class="bi bi-arrow-left me-1"></i>Back to app Login</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

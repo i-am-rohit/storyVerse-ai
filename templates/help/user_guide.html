@@ -1,0 +1,139 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}User Manual | StoryVerse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/user-guide.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ug-page">
+    <header class="ug-hero">
+        <span class="ug-badge"><i class="bi bi-book"></i> User Manual</span>
+        <h1 class="ug-title">StoryVerse AI <span class="ug-gradient">Guide</span></h1>
+        <p class="ug-lead">Everything you need to create stories, audiobooks, and book summaries.</p>
+    </header>
+
+    <nav class="ug-toc">
+        <a href="#getting-started">Getting Started</a>
+        <a href="#stories">Stories</a>
+        <a href="#story-size">Story Size</a>
+        <a href="#audiobooks">Audiobooks</a>
+        <a href="#free-music">Free Music</a>
+        <a href="#books">Books</a>
+        <a href="#account">Account</a>
+    </nav>
+
+    <section class="ug-section" id="getting-started">
+        <h2><i class="bi bi-rocket-takeoff"></i> Getting Started</h2>
+        <ol class="ug-steps">
+            <li><strong>Register</strong> or <strong>Login</strong> from the home screen.</li>
+            <li>Open <strong>Stories</strong> to see your library or create a new tale.</li>
+            <li>Use <strong>Audiobooks</strong> to turn any saved story into narrated audio.</li>
+            <li>Use <strong>Books</strong> to upload PDF/DOCX/TXT and generate summaries.</li>
+        </ol>
+    </section>
+
+    <section class="ug-section" id="stories">
+        <h2><i class="bi bi-journal-richtext"></i> Stories</h2>
+        <div class="ug-grid">
+            <article class="ug-card">
+                <h3>Create a story</h3>
+                <p>Go to <strong>Stories → New Story</strong>. Pick language, genre, age group, and <strong>story size</strong>, then describe your idea in the prompt box.</p>
+            </article>
+            <article class="ug-card">
+                <h3>Continue &amp; save</h3>
+                <p>After generation, use <strong>Continue Story</strong> to extend the tale, then <strong>Save</strong> to store it in your library.</p>
+            </article>
+            <article class="ug-card">
+                <h3>Stories library</h3>
+                <p>Search, filter by source/audio, view full text, edit, open in Audiobooks, or delete from the Stories hub.</p>
+            </article>
+            <article class="ug-card">
+                <h3>Sources</h3>
+                <ul>
+                    <li><strong>Generated</strong> — AI-written from your prompt</li>
+                    <li><strong>Uploaded</strong> — created from a book summary</li>
+                    <li><strong>Manual</strong> — saved without a prompt</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <section class="ug-section" id="story-size">
+        <h2><i class="bi bi-text-paragraph"></i> Story Size</h2>
+        <p>Choose how long your generated story should be in <strong>Story Settings → Story Size</strong>:</p>
+        <table class="ug-table">
+            <thead>
+                <tr><th>Size</th><th>Approx. words</th><th>Best for</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Short</td><td>~150</td><td>Quick bedtime tales</td></tr>
+                <tr><td>Medium</td><td>~350</td><td>Standard stories (default)</td></tr>
+                <tr><td>Long</td><td>~600</td><td>Richer plots</td></tr>
+                <tr><td>Extra Long</td><td>~1,000</td><td>Chapter-style narratives</td></tr>
+            </tbody>
+        </table>
+        <p class="ug-note">Word counts are approximate. <strong>Continue Story</strong> adds more content based on the size you selected.</p>
+    </section>
+
+    <section class="ug-section" id="audiobooks">
+        <h2><i class="bi bi-headphones"></i> Audiobooks</h2>
+        <div class="ug-grid">
+            <article class="ug-card">
+                <h3>Generate audio</h3>
+                <p>Select a saved story, pick a voice (Western or Indian), choose background music, and click <strong>Generate Audio</strong>.</p>
+            </article>
+            <article class="ug-card">
+                <h3>Voices</h3>
+                <p>ElevenLabs powers premium voices when configured. <strong>Jennie</strong> works on the free tier. Demo audio is used if credits run out.</p>
+            </article>
+            <article class="ug-card">
+                <h3>Your library</h3>
+                <p>Track progress, play, regenerate with new voice/music, download, or delete audiobooks from the studio library.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="ug-section ug-section--highlight" id="free-music">
+        <h2><i class="bi bi-gift"></i> Free Background Music</h2>
+        <p><strong>All background music in StoryVerse AI is 100% free.</strong> Music is composed locally on the server using our built-in Music Agent — no extra API keys, credits, or subscriptions required.</p>
+        <ul class="ug-features">
+            <li><i class="bi bi-check-circle"></i> Indian Classical, Bollywood, Sitar, Bansuri, Tabla</li>
+            <li><i class="bi bi-check-circle"></i> <strong>Auto</strong> picks music matched to story genre &amp; language</li>
+            <li><i class="bi bi-check-circle"></i> Mixed with narration in your browser during playback</li>
+            <li><i class="bi bi-check-circle"></i> Choose <strong>No Music</strong> for voice-only narration</li>
+        </ul>
+    </section>
+
+    <section class="ug-section" id="books">
+        <h2><i class="bi bi-cloud-upload"></i> Books &amp; Summaries</h2>
+        <p>Upload PDF, DOCX, or TXT files (up to 10 MB). For each book you can generate:</p>
+        <ul class="ug-list">
+            <li>Short &amp; detailed summaries</li>
+            <li>Chapter summaries &amp; chapter shorts</li>
+            <li>Reading guide &amp; best way to read</li>
+            <li>Narrate summary as audio</li>
+        </ul>
+    </section>
+
+    <section class="ug-section" id="account">
+        <h2><i class="bi bi-person-circle"></i> Account</h2>
+        <ul class="ug-list">
+            <li><strong>Login / Register</strong> — username &amp; password, or social (Gmail, Outlook, Facebook when configured)</li>
+            <li><strong>Manage Users</strong> — separate superuser page for administrators</li>
+            <li><strong>Profile</strong> — view your account from the user menu</li>
+            <li>Sessions stay signed in until you log out</li>
+        </ul>
+    </section>
+
+    <footer class="ug-footer">
+        <a href="{% url 'stories:index' %}" class="ug-btn"><i class="bi bi-journal-richtext"></i> Open Stories</a>
+        <a href="{% url 'stories:create' %}" class="ug-btn ug-btn--primary"><i class="bi bi-stars"></i> Create Story</a>
+    </footer>
+</div>
+{% endblock %}

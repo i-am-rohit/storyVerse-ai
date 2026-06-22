@@ -1,0 +1,135 @@
+:root {
+    --sv-primary: #3b82f6;
+    --sv-bg: #06060f;
+    --sv-text: #f1f5f9;
+    --sv-muted: #94a3b8;
+    --sv-glass: rgba(255, 255, 255, 0.05);
+    --sv-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body.app-body {
+    min-height: 100vh;
+    background: var(--sv-bg);
+    color: var(--sv-text);
+}
+
+main {
+    flex: 1;
+}
+
+/* Glass navbar */
+.app-body .navbar {
+    background: rgba(6, 6, 15, 0.72) !important;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--sv-glass-border);
+}
+
+.app-body .navbar-brand,
+.app-body .nav-link {
+    color: var(--sv-text) !important;
+}
+
+.app-body .nav-link:hover,
+.app-body .nav-link:focus {
+    color: #00d4ff !important;
+}
+
+.app-body .dropdown-menu {
+    background: rgba(12, 12, 28, 0.95);
+    border: 1px solid var(--sv-glass-border);
+    backdrop-filter: blur(16px);
+}
+
+.app-body .dropdown-item {
+    color: var(--sv-text);
+}
+
+.app-body .dropdown-item:hover {
+    background: rgba(59, 130, 246, 0.15);
+    color: #fff;
+}
+
+.app-body .logout-form .dropdown-item {
+    cursor: pointer;
+}
+
+.app-body .logout-form .dropdown-item:hover {
+    background: rgba(59, 130, 246, 0.15);
+    color: #fff;
+}
+
+.app-body .dropdown-menu .logout-link {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+}
+
+.app-body .dropdown-menu .logout-link:hover {
+    background: rgba(59, 130, 246, 0.15);
+    color: #fff;
+}
+
+.app-body .nav-manage-btn {
+    border-color: rgba(34, 211, 238, 0.45) !important;
+    color: #67e8f9 !important;
+    white-space: nowrap;
+}
+
+.app-body .nav-manage-btn:hover {
+    background: rgba(34, 211, 238, 0.12) !important;
+    border-color: rgba(34, 211, 238, 0.7) !important;
+    color: #fff !important;
+}
+
+.app-body footer {
+    background: rgba(6, 6, 15, 0.55);
+    backdrop-filter: blur(12px);
+    border-top-color: var(--sv-glass-border) !important;
+    color: var(--sv-muted) !important;
+}
+
+/* Auth cards on glass background */
+.app-body .card {
+    background: var(--sv-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--sv-glass-border) !important;
+    color: var(--sv-text);
+    transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.app-body .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.app-body .card .text-muted,
+.app-body footer .text-muted {
+    color: var(--sv-muted) !important;
+}
+
+.app-body .form-control {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--sv-glass-border);
+    color: var(--sv-text);
+}
+
+.app-body .form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: var(--sv-text);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
+}
+
+.app-body .form-label {
+    color: var(--sv-muted);
+}
+
+.app-body .alert {
+    backdrop-filter: blur(12px);
+}
+
+.navbar-brand {
+    letter-spacing: 0.02em;
+}

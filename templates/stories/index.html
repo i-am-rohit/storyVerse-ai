@@ -1,0 +1,194 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Stories | StoryVerse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/stories-library.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="st-page" id="stories-page">
+    <header class="st-header">
+        <div class="st-header__text">
+            <span class="st-badge"><i class="bi bi-journal-richtext"></i> Your Library</span>
+            <h1 class="st-title">Stories <span class="st-gradient">Hub</span></h1>
+            <p class="st-subtitle">Track AI-generated tales, book summaries, and audiobook conversion — all in one place.</p>
+        </div>
+        <div class="st-header__actions">
+            <a href="{% url 'user_guide' %}" class="st-btn st-btn--ghost">
+                <i class="bi bi-book"></i>
+                <span>User Manual</span>
+            </a>
+            <a href="{% url 'stories:create' %}" class="st-btn st-btn--primary">
+                <i class="bi bi-plus-lg"></i>
+                <span>New Story</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="st-stats">
+        <button type="button" class="st-stat st-stat--all is-active" data-filter-source="all">
+            <span class="st-stat__icon"><i class="bi bi-collection"></i></span>
+            <span class="st-stat__body">
+                <span class="st-stat__value">{{ counts.total }}</span>
+                <span class="st-stat__label">Total Stories</span>
+            </span>
+        </button>
+        <button type="button" class="st-stat st-stat--generated" data-filter-source="generated">
+            <span class="st-stat__icon"><i class="bi bi-stars"></i></span>
+            <span class="st-stat__body">
+                <span class="st-stat__value">{{ counts.generated }}</span>
+                <span class="st-stat__label">Generated</span>
+            </span>
+        </button>
+        <button type="button" class="st-stat st-stat--uploaded" data-filter-source="uploaded">
+            <span class="st-stat__icon"><i class="bi bi-cloud-upload"></i></span>
+            <span class="st-stat__body">
+                <span class="st-stat__value">{{ counts.uploaded }}</span>
+                <span class="st-stat__label">Uploaded</span>
+            </span>
+        </button>
+        <button type="button" class="st-stat st-stat--audio" data-filter-audio="converted">
+            <span class="st-stat__icon"><i class="bi bi-headphones"></i></span>
+            <span class="st-stat__body">
+                <span class="st-stat__value">{{ counts.converted }}</span>
+                <span class="st-stat__label">Audio Ready</span>
+            </span>
+        </button>
+    </div>
+
+    <div class="st-toolbar">
+        <div class="st-search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="search" id="st-search" class="st-search" placeholder="Search by title, genre, or language…" autocomplete="off">
+        </div>
+        <div class="st-filters">
+            <select id="st-filter-audio" class="st-select" aria-label="Filter by audio status">
+                <option value="all">All audio</option>
+                <option value="converted">Audio ready</option>
+                <option value="pending">Audio pending</option>
+            </select>
+            <select id="st-sort" class="st-select" aria-label="Sort stories">
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="title">Title A–Z</option>
+            </select>
+        </div>
+    </div>
+
+    {% if stories %}
+    <div class="st-grid" id="story-grid">
+        {% for story in stories %}
+        <article class="st-card"
+                 data-id="{{ story.id }}"
+                 data-title="{{ story.title|lower }}"
+                 data-source="{{ story.source_slug }}"
+                 data-audio="{% if story.audio_converted %}converted{% else %}pending{% endif %}"
+                 data-genre="{{ story.genre|lower }}"
+                 data-language="{{ story.language|lower }}"
+                 data-created="{{ story.created_at|date:'U' }}">
+            <div class="st-card__top">
+                <span class="st-chip st-chip--{{ story.source_slug }}">
+                    <i class="bi {{ story.source_icon }}"></i>{{ story.source }}
+                </span>
+                {% if story.audio_converted %}
+                <span class="st-audio st-audio--ready"><i class="bi bi-check-circle-fill"></i> Audio</span>
+                {% else %}
+                <span class="st-audio st-audio--pending"><i class="bi bi-hourglass-split"></i> Pending</span>
+                {% endif %}
+            </div>
+
+            <h2 class="st-card__title">{{ story.title }}</h2>
+            <p class="st-card__preview">{{ story.preview }}</p>
+
+            <div class="st-card__meta">
+                <span><i class="bi bi-translate"></i>{{ story.language }}</span>
+                <span><i class="bi bi-bookmark"></i>{{ story.genre }}</span>
+                <span><i class="bi bi-people"></i>{{ story.age_group }}</span>
+                <span><i class="bi bi-text-paragraph"></i>{{ story.story_length }}</span>
+            </div>
+
+            <div class="st-card__footer">
+                <span class="st-card__date">
+                    <i class="bi bi-clock"></i>{{ story.created_at|date:"M d, Y" }}
+                    · {{ story.word_count }} words
+                </span>
+                <div class="st-card__actions">
+                    <button type="button" class="st-action" data-action="view" data-id="{{ story.id }}" title="View story">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <a href="{% url 'stories:create' %}?story={{ story.id }}" class="st-action" title="Edit in generator">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'audiobooks:index' %}?story={{ story.id }}" class="st-action st-action--accent" title="Open in Audiobooks">
+                        <i class="bi bi-headphones"></i>
+                    </a>
+                    <button type="button" class="st-action st-action--danger" data-action="delete" data-id="{{ story.id }}" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    <p class="st-no-results d-none" id="st-no-results">
+        <i class="bi bi-search"></i> No stories match your filters.
+    </p>
+    {% else %}
+    <div class="st-empty">
+        <div class="st-empty__icon"><i class="bi bi-journal-plus"></i></div>
+        <h2>No stories yet</h2>
+        <p>Create your first AI story or upload a book summary to see it here.</p>
+        <div class="st-empty__actions">
+            <a href="{% url 'stories:create' %}" class="st-btn st-btn--primary"><i class="bi bi-stars"></i> Create Story</a>
+            <a href="{% url 'books:index' %}" class="st-btn st-btn--ghost"><i class="bi bi-cloud-upload"></i> Upload Book</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="st-modal d-none" id="story-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="st-modal__backdrop" data-close-modal></div>
+    <div class="st-modal__panel">
+        <header class="st-modal__header">
+            <div>
+                <span class="st-chip st-chip--generated" id="modal-source"></span>
+                <h2 class="st-modal__title" id="modal-title">Story</h2>
+                <p class="st-modal__meta" id="modal-meta"></p>
+            </div>
+            <button type="button" class="st-modal__close" data-close-modal aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </header>
+        <div class="st-modal__body" id="modal-body">
+            <div class="st-modal__loading"><div class="st-spinner"></div></div>
+        </div>
+        <footer class="st-modal__footer">
+            <a href="#" class="st-btn st-btn--ghost" id="modal-edit"><i class="bi bi-pencil"></i> Edit</a>
+            <a href="#" class="st-btn st-btn--primary" id="modal-audio"><i class="bi bi-headphones"></i> Audiobook Studio</a>
+        </footer>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+window.STORIES_LIBRARY = {
+    csrfToken: "{{ csrf_token }}",
+    urls: {
+        get: "{% url 'stories:get' 0 %}".replace("/0/", "/{id}/"),
+        delete: "{% url 'stories:delete' 0 %}".replace("/0/", "/{id}/"),
+        create: "{% url 'stories:create' %}",
+        audiobooks: "{% url 'audiobooks:index' %}",
+    },
+};
+</script>
+<script src="{% static 'js/stories-library.js' %}"></script>
+{% endblock %}

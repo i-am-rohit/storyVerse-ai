@@ -1,0 +1,48 @@
+/* ==========================================================================
+   StoryVerse AI — Global background image with readability overlay
+   ========================================================================== */
+
+:root {
+    --site-bg-image: url("../images/storyverse-bg.jpeg");
+    --site-bg-image-opacity: 0.38;
+    --site-bg-overlay: linear-gradient(
+        165deg,
+        rgba(6, 6, 15, 0.94) 0%,
+        rgba(12, 8, 32, 0.72) 45%,
+        rgba(8, 6, 20, 0.86) 100%
+    );
+}
+
+.site-background {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.site-background__image {
+    position: absolute;
+    inset: 0;
+    background-image: var(--site-bg-image);
+    background-size: cover;
+    background-position: center 42%;
+    background-repeat: no-repeat;
+    opacity: var(--site-bg-image-opacity);
+    filter: saturate(1.08) brightness(0.92);
+    transform: scale(1.02);
+}
+
+.site-background__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--site-bg-overlay);
+}
+
+.site-content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}

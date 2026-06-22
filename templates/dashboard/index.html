@@ -1,0 +1,188 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | StoryVerse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dash-page">
+    <!-- Header -->
+    <header class="dash-header">
+        <div>
+            <span class="dash-badge"><i class="bi bi-grid-1x2"></i> Dashboard</span>
+            <h1 class="dash-title">Welcome back, <span class="dash-neon">{{ user.get_full_name|default:user.username }}</span></h1>
+            <p class="dash-subtitle">Here's an overview of your creative activity on StoryVerse AI.</p>
+        </div>
+        <div class="dash-header-actions">
+            <a href="{% url 'stories:create' %}" class="btn dash-btn dash-btn-primary">
+                <i class="bi bi-plus-lg"></i> New Story
+            </a>
+        </div>
+    </header>
+
+    <!-- Stat Cards -->
+    <div class="row g-3 g-lg-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="dash-stat-card glass-card">
+                <div class="dash-stat-icon dash-stat-icon--blue">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+                <div class="dash-stat-body">
+                    <span class="dash-stat-value" data-counter="{{ stats.total_stories }}">0</span>
+                    <span class="dash-stat-label">Total Stories</span>
+                </div>
+                <div class="dash-stat-glow dash-stat-glow--blue"></div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="dash-stat-card glass-card">
+                <div class="dash-stat-icon dash-stat-icon--green">
+                    <i class="bi bi-headphones"></i>
+                </div>
+                <div class="dash-stat-body">
+                    <span class="dash-stat-value" data-counter="{{ stats.total_audiobooks }}">0</span>
+                    <span class="dash-stat-label">Audiobooks Generated</span>
+                </div>
+                <div class="dash-stat-glow dash-stat-glow--green"></div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="dash-stat-card glass-card">
+                <div class="dash-stat-icon dash-stat-icon--purple">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+                <div class="dash-stat-body">
+                    <span class="dash-stat-value" data-counter="{{ stats.total_summaries }}">0</span>
+                    <span class="dash-stat-label">Summaries Generated</span>
+                </div>
+                <div class="dash-stat-glow dash-stat-glow--purple"></div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="dash-stat-card glass-card">
+                <div class="dash-stat-icon dash-stat-icon--cyan">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="dash-stat-body">
+                    <span class="dash-stat-value" data-counter="{{ stats.listening_hours }}" data-decimals="1">0</span>
+                    <span class="dash-stat-label">Listening Hours</span>
+                </div>
+                <div class="dash-stat-glow dash-stat-glow--cyan"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Widgets -->
+    <div class="row g-3 g-lg-4 mb-4">
+        <div class="col-md-4">
+            <a href="{% url 'stories:create' %}" class="dash-widget glass-card">
+                <div class="dash-widget-icon"><i class="bi bi-magic"></i></div>
+                <div>
+                    <h3>Story Generator</h3>
+                    <p>Create AI-powered stories</p>
+                </div>
+                <i class="bi bi-arrow-right dash-widget-arrow"></i>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'audiobooks:index' %}" class="dash-widget glass-card">
+                <div class="dash-widget-icon dash-widget-icon--green"><i class="bi bi-mic"></i></div>
+                <div>
+                    <h3>Audiobook Studio</h3>
+                    <p>Convert stories to audio</p>
+                </div>
+                <i class="bi bi-arrow-right dash-widget-arrow"></i>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'books:index' %}" class="dash-widget glass-card">
+                <div class="dash-widget-icon dash-widget-icon--purple"><i class="bi bi-book"></i></div>
+                <div>
+                    <h3>Book Summarizer</h3>
+                    <p>Summarize uploaded books</p>
+                </div>
+                <i class="bi bi-arrow-right dash-widget-arrow"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-3 g-lg-4 mb-4">
+        <div class="col-lg-4">
+            <div class="dash-chart-card glass-card">
+                <div class="dash-chart-header">
+                    <h2><i class="bi bi-pie-chart"></i> Genre Distribution</h2>
+                </div>
+                <div class="dash-chart-body">
+                    <canvas id="genre-chart" height="240"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="dash-chart-card glass-card">
+                <div class="dash-chart-header">
+                    <h2><i class="bi bi-bar-chart"></i> Monthly Stories</h2>
+                </div>
+                <div class="dash-chart-body">
+                    <canvas id="monthly-chart" height="240"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="dash-chart-card glass-card">
+                <div class="dash-chart-header">
+                    <h2><i class="bi bi-translate"></i> Language Usage</h2>
+                </div>
+                <div class="dash-chart-body">
+                    <canvas id="language-chart" height="240"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Timeline -->
+    <div class="dash-timeline-card glass-card">
+        <div class="dash-chart-header">
+            <h2><i class="bi bi-activity"></i> Recent Activity</h2>
+        </div>
+        <div class="dash-timeline">
+            {% if activities %}
+            {% for item in activities %}
+            <a href="{{ item.url }}" class="dash-timeline-item">
+                <div class="dash-timeline-dot" style="--dot-color: {{ item.color }}">
+                    <i class="bi {{ item.icon }}"></i>
+                </div>
+                <div class="dash-timeline-content">
+                    <span class="dash-timeline-title">{{ item.title }}</span>
+                    <span class="dash-timeline-desc">{{ item.description }}</span>
+                </div>
+                <time class="dash-timeline-time" datetime="{{ item.timestamp|date:'c' }}">
+                    {{ item.timestamp|timesince }} ago
+                </time>
+            </a>
+            {% endfor %}
+            {% else %}
+            <div class="dash-timeline-empty">
+                <i class="bi bi-inbox"></i>
+                <p>No activity yet. Create your first story to get started!</p>
+                <a href="{% url 'stories:create' %}" class="btn dash-btn dash-btn-outline btn-sm">Create Story</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    window.DASHBOARD_DATA = {{ chart_data|safe }};
+</script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

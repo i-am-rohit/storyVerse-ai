@@ -1,0 +1,53 @@
+{% extends "auth_base.html" %}
+
+{% block title %}Login | StoryVerse AI{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <div class="auth-card">
+        <h1 class="auth-title">Login</h1>
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger py-2 small">
+            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+
+        {% include "accounts/_social_buttons.html" %}
+
+        <div class="auth-divider"><span>or</span></div>
+
+        <form method="post" action="{% url 'accounts:login' %}" novalidate class="auth-form">
+            {% csrf_token %}
+            {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+            {% endif %}
+            <div class="mb-3">
+                <input type="text" name="username" id="id_username"
+                       class="form-control auth-input{% if form.username.errors %} is-invalid{% endif %}"
+                       placeholder="Username" value="{{ form.username.value|default:'' }}"
+                       required autofocus autocomplete="username">
+                {% for error in form.username.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                <input type="password" name="password" id="id_password"
+                       class="form-control auth-input{% if form.password.errors %} is-invalid{% endif %}"
+                       placeholder="Password" required autocomplete="current-password">
+                {% for error in form.password.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary w-100 auth-submit">Login</button>
+        </form>
+
+        <p class="auth-footer">
+            Don't have an account? <a href="{% url 'accounts:register' %}">Register</a>
+        </p>
+        <p class="auth-footer auth-footer--sub">
+            <a href="{% url 'accounts:user_login' %}">Manage Users</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

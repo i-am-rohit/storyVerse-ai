@@ -1,0 +1,14 @@
+{% if as_link %}
+<a href="{% url 'accounts:logout' %}"
+   class="logout-link {{ button_class|default:'btn btn-sm btn-outline-danger' }}{% if form_class %} {{ form_class }}{% endif %}"
+   {% if menu_item %}role="menuitem"{% endif %}>
+    {% if icon %}<i class="bi {{ icon }} me-1"></i>{% endif %}{{ label|default:"Logout" }}
+</a>
+{% else %}
+<form method="post" action="{% url 'accounts:logout' %}" class="logout-form{% if form_class %} {{ form_class }}{% endif %}">
+    {% csrf_token %}
+    <button type="submit" class="{{ button_class|default:'btn btn-sm btn-outline-danger' }}">
+        {% if icon %}<i class="bi {{ icon }} me-1"></i>{% endif %}{{ label|default:"Logout" }}
+    </button>
+</form>
+{% endif %}

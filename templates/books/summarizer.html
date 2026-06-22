@@ -1,0 +1,249 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Book Summarizer | StoryVerse AI{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/book-summarizer.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bs-page">
+    <!-- Header -->
+    <header class="bs-header">
+        <span class="bs-badge"><i class="bi bi-file-earmark-text"></i> Book Summarizer</span>
+        <h1 class="bs-title">Summarize Any <span class="bs-gradient">Book</span></h1>
+        <p class="bs-subtitle">Upload PDF, DOCX, or TXT — summarize the full book, each chapter, or turn chapters into short stories.</p>
+    </header>
+
+    <div class="row g-4">
+        <!-- Left — Upload -->
+        <div class="col-lg-5">
+            <div class="bs-card gradient-border">
+                <div class="bs-card-inner">
+                    <div class="bs-card-header">
+                        <i class="bi bi-cloud-upload"></i>
+                        <h2>Upload Document</h2>
+                    </div>
+
+                    <!-- Drag & Drop Zone -->
+                    <div class="bs-dropzone" id="dropzone">
+                        <input type="file" id="file-input" accept=".pdf,.docx,.txt" hidden>
+                        <div class="bs-dropzone-content" id="dropzone-content">
+                            <div class="bs-dropzone-icon">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+                            <p class="bs-dropzone-title">Drag & drop your file here</p>
+                            <p class="bs-dropzone-hint">or click to browse</p>
+                            <div class="bs-format-tags">
+                                <span class="bs-format-tag"><i class="bi bi-file-pdf"></i> PDF</span>
+                                <span class="bs-format-tag"><i class="bi bi-file-word"></i> DOCX</span>
+                                <span class="bs-format-tag"><i class="bi bi-file-text"></i> TXT</span>
+                            </div>
+                            <p class="bs-dropzone-limit">Max file size: 10 MB</p>
+                        </div>
+
+                        <!-- File Preview -->
+                        <div class="bs-file-preview d-none" id="file-preview">
+                            <div class="bs-file-icon" id="file-icon">
+                                <i class="bi bi-file-earmark"></i>
+                            </div>
+                            <div class="bs-file-info">
+                                <span class="bs-file-name" id="file-name"></span>
+                                <span class="bs-file-meta" id="file-meta"></span>
+                            </div>
+                            <button type="button" class="bs-file-remove" id="file-remove" title="Remove file">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+
+                        <div class="bs-upload-progress d-none" id="upload-progress">
+                            <div class="bs-progress-bar">
+                                <div class="bs-progress-fill" id="progress-fill"></div>
+                            </div>
+                            <span class="bs-progress-text" id="progress-text">Uploading…</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn bs-btn bs-btn-primary bs-btn-animated w-100 mt-3" id="btn-generate" disabled>
+                        <span class="bs-btn-content"><i class="bi bi-stars"></i> Generate All Summaries</span>
+                        <span class="bs-btn-shimmer"></span>
+                    </button>
+
+                    <div class="bs-quick-actions mt-3 d-none" id="quick-actions">
+                        <p class="bs-quick-label">Quick actions for selected book</p>
+                        <div class="bs-quick-grid">
+                            <button type="button" class="btn bs-btn bs-btn-outline bs-quick-btn" id="btn-full-book" disabled>
+                                <i class="bi bi-book"></i> Full Book Summary
+                            </button>
+                            <button type="button" class="btn bs-btn bs-btn-outline bs-quick-btn" id="btn-chapters" disabled>
+                                <i class="bi bi-list-ol"></i> Chapter Summaries
+                            </button>
+                            <button type="button" class="btn bs-btn bs-btn-outline bs-quick-btn" id="btn-short-stories" disabled>
+                                <i class="bi bi-journal-richtext"></i> Short Stories
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uploaded books library -->
+            <div class="bs-card gradient-border mt-4">
+                <div class="bs-card-inner">
+                    <div class="bs-card-header">
+                        <i class="bi bi-collection"></i>
+                        <h2>Your Uploaded Books</h2>
+                    </div>
+                    <p class="bs-library-hint">Choose how to process each book: main points, chapter-wise shorts, short stories, or full summaries.</p>
+                    <div class="bs-library-list" id="book-library"></div>
+                    <p class="bs-library-empty" id="library-empty">No books uploaded yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right — Output -->
+        <div class="col-lg-7">
+            <div class="bs-card gradient-border">
+                <div class="bs-card-inner">
+                    <div class="bs-card-header">
+                        <i class="bi bi-journal-text"></i>
+                        <h2>Summary Output</h2>
+                        <span class="bs-status badge" id="summary-status">Waiting</span>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="bs-empty" id="empty-state">
+                        <div class="bs-empty-icon"><i class="bi bi-book"></i></div>
+                        <h3>Summaries will appear here</h3>
+                        <p>Upload a document and click <strong>Generate Summary</strong> to begin.</p>
+                    </div>
+
+                    <!-- Summary Tabs -->
+                    <div class="bs-output d-none" id="summary-output">
+                        <ul class="nav bs-tabs" id="summary-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="tab-short" data-bs-toggle="tab"
+                                        data-bs-target="#panel-short" type="button" role="tab">
+                                    <i class="bi bi-lightning"></i> Short Summary
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-detailed" data-bs-toggle="tab"
+                                        data-bs-target="#panel-detailed" type="button" role="tab">
+                                    <i class="bi bi-book"></i> Full Book
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-main-points" data-bs-toggle="tab"
+                                        data-bs-target="#panel-main-points" type="button" role="tab">
+                                    <i class="bi bi-list-check"></i> Main Points
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-chapters-short" data-bs-toggle="tab"
+                                        data-bs-target="#panel-chapters-short" type="button" role="tab">
+                                    <i class="bi bi-lightning-charge"></i> Chapter Wise
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-short-stories" data-bs-toggle="tab"
+                                        data-bs-target="#panel-short-stories" type="button" role="tab">
+                                    <i class="bi bi-journal-richtext"></i> Short Stories
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-chapters" data-bs-toggle="tab"
+                                        data-bs-target="#panel-chapters" type="button" role="tab">
+                                    <i class="bi bi-list-ol"></i> Chapter Summary
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-reading" data-bs-toggle="tab"
+                                        data-bs-target="#panel-reading" type="button" role="tab">
+                                    <i class="bi bi-signpost-split"></i> Reading Guide
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content bs-tab-content" id="summary-tab-content">
+                            <div class="tab-pane fade show active" id="panel-short" role="tabpanel">
+                                <div class="bs-summary-block glass-inner">
+                                    <p id="short-summary"></p>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="panel-detailed" role="tabpanel">
+                                <p class="bs-tab-hint">Plain story summary — ready to read aloud or convert to audio. No headings or metadata.</p>
+                                <div class="bs-summary-block glass-inner">
+                                    <p id="detailed-summary"></p>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="panel-main-points" role="tabpanel">
+                                <ul class="bs-points-list" id="main-points-list"></ul>
+                            </div>
+                            <div class="tab-pane fade" id="panel-chapters-short" role="tabpanel">
+                                <p class="bs-tab-hint">Each section is split chapter-wise with a short summary and share of the book.</p>
+                                <div class="bs-chapters" id="chapter-short-list"></div>
+                            </div>
+                            <div class="tab-pane fade" id="panel-short-stories" role="tabpanel">
+                                <p class="bs-tab-hint">Mini stories inspired by each chapter or section of your uploaded book.</p>
+                                <div class="bs-stories" id="short-stories-list"></div>
+                            </div>
+                            <div class="tab-pane fade" id="panel-chapters" role="tabpanel">
+                                <div class="bs-chapters" id="chapter-list"></div>
+                            </div>
+                            <div class="tab-pane fade" id="panel-reading" role="tabpanel">
+                                <div class="bs-summary-block glass-inner">
+                                    <p id="reading-guide"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bs-live-progress d-none" id="generation-progress">
+                        <div class="bs-progress-bar">
+                            <div class="bs-progress-fill" id="gen-progress-fill"></div>
+                        </div>
+                        <p class="bs-progress-text" id="gen-progress-text">Preparing…</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="bs-actions d-none" id="summary-actions">
+                        <button type="button" class="btn bs-btn bs-btn-outline bs-btn-animated" id="btn-narrate">
+                            <span class="bs-btn-content"><i class="bi bi-mic"></i> Narrate Summary</span>
+                            <span class="bs-btn-shimmer"></span>
+                        </button>
+                        <button type="button" class="btn bs-btn bs-btn-success bs-btn-animated" id="btn-download">
+                            <span class="bs-btn-content"><i class="bi bi-download"></i> Download Summary</span>
+                            <span class="bs-btn-shimmer"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.BOOK_SUMMARIZER = {
+        urls: {
+            upload: "{% url 'books:upload' %}",
+            documents: "{% url 'books:list_documents' %}",
+            document: "{% url 'books:get_document' document_id=0 %}".replace("/0/", "/{id}/"),
+            delete: "{% url 'books:delete_document' document_id=0 %}".replace("/0/", "/{id}/"),
+            generate: "{% url 'books:generate_stream' %}",
+            download: "{% url 'books:download' summary_id=0 %}".replace("/0/", "/{id}/"),
+            narrate: "{% url 'books:narrate' %}",
+        },
+        csrfToken: "{{ csrf_token }}",
+    };
+</script>
+<script src="{% static 'js/sse-client.js' %}"></script>
+<script src="{% static 'js/book-summarizer.js' %}"></script>
+{% endblock %}
